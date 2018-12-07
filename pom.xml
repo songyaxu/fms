@@ -133,10 +133,10 @@
             <version>${slf4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.6</version>
-        </dependency>
+	  <groupId>com.alibaba</groupId>
+	  <artifactId>fastjson</artifactId>
+	  <version>[1.2.31,)</version>
+	</dependency>
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
             <artifactId>jackson-mapper-asl</artifactId>
