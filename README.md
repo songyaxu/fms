@@ -3,6 +3,4 @@
 
 
 简单的档案管理系统
-
-
-![](/220181207173856.png)
+![](https://github.com/songyaxu/fms/blob/master/20181207173856.png)
