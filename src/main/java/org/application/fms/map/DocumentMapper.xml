@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.application.fms.mapper.DocumentMapper">
+	<resultMap id="bean" type="org.application.fms.bean.Document">
+		<id column="serial" property="serial" />
+		<result column="type" property="type" />
+		<result column="title" property="title" />
+		<result column="content" property="content"/>
+		<result column="remark" property="remark"/>
+		<result column="date" property="date"/>
+		<result column="signatory" property="signatory"/>
+		<result column="from" property="from"/>
+		<result column="to" property="to"/>
+		<result column="cryptic_class" property="crypticClass"/>
+		<result column="apply_scope" property="applyScope"/>
+		<result column="image_file" property="imageFile"/>
+		<result column="attachment" property="attachment"/>
+		<result column="file_no" property="fileNo"/>
+		<result column="file_password" property="filePassword"/>
+		<result column="image_file_name" property="imageFileName"/>
+		<result column="attachment_name" property="attachmentName"/>
+		<result column="input_type" property="inputType"/>
+	</resultMap>
+	<sql id="columns">
+		serial, type, title, content, remark, date, signatory, `from`, `to`, cryptic_class, apply_scope, image_file,
+		attachment, file_no, file_password, image_file_name, attachment_name, input_type
+	</sql>
+	<insert id="add" useGeneratedKeys="true" keyProperty="d.serial">
+		INSERT INTO
+		document
+		(
+			type, title, content, 
+			remark, date, signatory, `from`, 
+			`to`, cryptic_class, apply_scope, image_file,
+			attachment, file_no, file_password, 
+			image_file_name, attachment_name, input_type
+		)
+		VALUES
+		(
+			#{d.type},#{d.title},#{d.content},
+			#{d.remark},#{d.date},#{d.signatory},#{d.from},
+			#{d.to},#{d.crypticClass},#{d.applyScope},#{d.imageFile},
+			#{d.attachment},#{d.fileNo},#{d.filePassword},
+			#{d.imageFileName},#{d.attachmentName},#{d.inputType}
+		)
+	</insert>
+	<update id="update">
+		UPDATE document
+		SET `to` = #{d.to},remark = #{d.remark}
+		WHERE 
+		serial = #{d.serial} 
+	</update>
+	<select id="get" resultMap="bean">
+		SELECT 
+		<include refid="columns"></include>
+		FROM document 
+		WHERE serial=#{serial}
+	</select>
+	<select id="getListByParam" resultMap="bean">
+		SELECT  
+		a.serial, a.type, a.title, a.content, a.remark, a.date, a.signatory, a.from, a.to, a.cryptic_class, a.apply_scope, a.image_file,
+		a.attachment, a.file_no, a.file_password, a.image_file_name, a.attachment_name, a.input_type
+		FROM document a 
+		LEFT JOIN file_map b ON a.serial=b.file_id
+		WHERE
+		1=1
+		<if test="p.sendId!=null and p.sendId!=0">
+			AND a.signatory=#{p.sendId}
+		</if>
+		<if test="p.level!=0 and p.level==1">
+			AND b.level1=1
+		</if>
+		<if test="p.level!=0 and p.level==2">
+			AND b.level2=1
+		</if>
+		<if test="p.level!=0 and p.level==3">
+			AND b.level3=1
+		</if>
+		<if test="p.level!=0 and p.level==4">
+			AND b.level4=1
+		</if>
+		<if test="p.level!=0 and p.level==5">
+			AND b.level5=1
+		</if>
+		<if test="p.level!=0 and p.level==6">
+			AND b.level6=1
+		</if>
+		<if test="p.keyWord!=null and p.keyWord!=''">
+			AND (a.content LIKE '%${p.keyWord}%' OR a.remark LIKE '%${p.keyWord}%' OR a.title LIKE '%${p.keyWord}%')
+		</if>
+		<if test="p.from!=0">
+			AND a.`from` = #{p.from}
+		</if>
+		<if test="p.to!=0">
+			AND a.`to` = #{p.to}
+		</if>
+		<if test="p.date!=null">
+			AND DATE_FORMAT(date,'%Y-%m-%d') = DATE_FORMAT(#{p.date},'%Y-%m-%d')
+		</if>
+		LIMIT  #{p.page.beginIndex},#{p.page.pageSize} ;
+	</select>
+	<select id="getCount" resultType="int">
+		SELECT  
+		COUNT(0)
+		FROM document a 
+		LEFT JOIN file_map b ON a.serial=b.file_id
+		WHERE
+		1=1
+		<if test="p.sendId!=null and p.sendId!=0">
+			AND a.signatory=#{p.sendId}
+		</if>
+		<if test="p.level!=0 and p.level==1">
+			AND b.level1=1
+		</if>
+		<if test="p.level!=0 and p.level==2">
+			AND b.level2=1
+		</if>
+		<if test="p.level!=0 and p.level==3">
+			AND b.level3=1
+		</if>
+		<if test="p.level!=0 and p.level==4">
+			AND b.level4=1
+		</if>
+		<if test="p.level!=0 and p.level==5">
+			AND b.level5=1
+		</if>
+		<if test="p.level!=0 and p.level==6">
+			AND b.level6=1
+		</if>
+		<if test="p.keyWord!=null and p.keyWord!=''">
+			AND (a.content LIKE '%${p.keyWord}%' OR a.remark LIKE '%${p.keyWord}%' OR a.title LIKE '%${p.keyWord}%')
+		</if>
+		<if test="p.from!=0">
+			AND a.`from` = #{p.from}
+		</if>
+		<if test="p.to!=0">
+			AND a.`to` = #{p.to}
+		</if>
+		<if test="p.date!=null">
+			AND DATE_FORMAT(date,'%Y-%m-%d') = DATE_FORMAT(#{p.date},'%Y-%m-%d')
+		</if>
+	</select>
+</mapper>

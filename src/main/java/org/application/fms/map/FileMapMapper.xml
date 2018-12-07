@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.application.fms.mapper.FileMapMapper">
+	<resultMap id="bean" type="org.application.fms.bean.FileMap">
+		<id column="id" property="id" />
+		<result column="file_id" property="fileId" />
+		<result column="level1" property="level1" />
+		<result column="level2" property="level2"/>
+		<result column="level3" property="level3"/>
+		<result column="level4" property="level4"/>
+		<result column="level5" property="level5"/>
+		<result column="level6" property="level6"/>
+	</resultMap>
+	<sql id="columns">
+		id, file_id, level1, level2, level3, level4,level5,level6
+	</sql>
+	<insert id="add" useGeneratedKeys="true" keyProperty="fm.id">
+		INSERT INTO
+		file_map
+		(
+			file_id, level1, level2,
+			level3, 
+			level4,
+			level5,
+			level6
+		)
+		VALUES
+		(
+			#{fm.fileId},#{fm.level1},#{fm.level2},
+			#{fm.level3},
+			#{fm.level4},
+			#{fm.level5},
+			#{fm.level6}
+		)
+	</insert>
+	<select id="getMapByFileIdAndLevel" resultMap="bean">
+		SELECT 
+		<include refid="columns"></include>
+		FROM file_map
+		WHERE 
+		file_id = #{m.fileId}
+		<if test="m.level1!=0">
+			AND level1 = 1
+		</if>
+		<if test="m.level2!=0">
+			AND level2 = 1
+		</if>
+		<if test="m.level3!=0">
+			AND level3 = 1
+		</if>
+		<if test="m.level4!=0">
+			AND level4 = 1
+		</if>
+		<if test="m.level5!=0">
+			AND level5 = 1
+		</if>
+		<if test="m.level6!=0">
+			AND level6 = 1
+		</if>
+	</select>
+	<select id="get" resultMap="bean">
+	 	SELECT 
+	 	<include refid="columns"></include>
+	 	FROM file_map
+	 	WHERE
+	 	file_id = #{id} 
+	</select>
+	<select id="select" resultMap="bean">
+		SELECT * FROM file_map
+		WHERE 
+		<if test="p.flag==0">
+			level1=2
+			OR
+			level2=2
+			OR
+			level3=2
+			OR
+			level4=2
+			OR
+			level5=2
+		</if>
+		<if test="p.flag==1">
+			level6=2
+		</if>
+		LIMIT  #{p.page.beginIndex},#{p.page.pageSize} ;
+	</select>
+	<select id="count" resultType="int">
+		SELECT COUNT(0) FROM file_map
+		WHERE 
+		<if test="p.flag==0">
+			level1=2
+			OR
+			level2=2
+			OR
+			level3=2
+			OR
+			level4=2
+			OR
+			level5=2
+		</if>
+		<if test="p.flag==1">
+			level6=2
+		</if>
+	</select>
+	<select id="update" resultType="int">
+		UPDATE file_map
+		SET 
+		level1=#{fm.level1},
+		level2=#{fm.level2},
+		level3=#{fm.level3},
+		level4=#{fm.level4},
+		level5=#{fm.level5},
+		level6=#{fm.level6}
+		WHERE id = #{fm.id}
+	</select>
+</mapper>
